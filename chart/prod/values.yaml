@@ -1,0 +1,44 @@
+name: sam-prod-server
+
+replicas: 1
+
+image:
+  repository: "sam0392in/sam"
+  tag: "sam_prod_1.0"
+
+containerPort: 5000
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 300Mi
+  requests:
+    cpu: 50m
+    memory: 100Mi
+
+service:
+  port: 80
+  type: ClusterIP
+
+ingress:
+  class: alb
+  host: sam-prod.samdevops.de
+  annotations:
+    nginx.ingress.kubernetes.io/load-balance: "ewma"
+    # To mirror the traffic to another ingress:
+    # nginx.ingress.kubernetes.io/mirror-target: https://sam-staging.samdevops.io/$request_uri
+    nginx.ingress.kubernetes.io/mirror-host: "sam-staging.samdevops.io"
+
+spot:
+  enabled: true
+  taint:
+    key: nature
+    operator: In
+  spotnodegroup: spot
+  backupnodegroup: spot
+
+tolerations:
+  - effect: NoSchedule
+    key: nature
+    operator: Equal
+    value: spot

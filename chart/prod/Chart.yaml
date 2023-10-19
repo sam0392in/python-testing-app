@@ -1,0 +1,6 @@
+apiVersion: v1
+name: sam-prod-server
+description: sam prod server
+version: "1.0"
+maintainers:
+  - name: Samarth Kanungo

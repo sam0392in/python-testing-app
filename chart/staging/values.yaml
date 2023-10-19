@@ -1,0 +1,41 @@
+name: sam-staging-server
+
+replicas: 1
+
+image:
+  repository: "sam0392in/sam"
+  tag: "sam_staging_1.0"
+
+containerPort: 5000
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 300Mi
+  requests:
+    cpu: 50m
+    memory: 100Mi
+
+service:
+  port: 80
+  type: ClusterIP
+
+ingress:
+  class: nginx-internal
+  host: sam-staging.samdevops.io
+  annotations:
+    nginx.ingress.kubernetes.io/load-balance: "ewma"
+
+spot:
+  enabled: true
+  taint:
+    key: nature
+    operator: In
+  spotnodegroup: spot
+  backupnodegroup: spot
+
+tolerations:
+  - effect: NoSchedule
+    key: nature
+    operator: Equal
+    value: spot
